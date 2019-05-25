@@ -16,7 +16,7 @@ class Characters extends Component {
             },
             nextPage: 1
         };
-        console.log(this.state)
+        window.onscroll = this.detectScrollEnd;
     }
 
     componentDidMount() {
@@ -44,6 +44,18 @@ class Characters extends Component {
                 error: e
             }));
         }
+
+
+    };
+
+    detectScrollEnd = () => {
+      const contentHeight = document.body.offsetHeight;
+      const scrollPosition = window.scrollY + window.innerHeight;
+      if (scrollPosition >= contentHeight) {
+          if (!this.state.loading) {
+              this.fetchCharacters();
+          }
+      }
     };
 
 
@@ -65,12 +77,6 @@ class Characters extends Component {
                     <div className="loader">
                         <Loader/>
                     </div>}
-
-                    {!this.state.loading && (
-                        <button onClick={()=>this.fetchCharacters()}>Load More</button>
-                    )}
-
-
                 </div>
             </div>
         );
