@@ -14,7 +14,8 @@ class Characters extends Component {
             data: {
                 results: []
             },
-            nextPage: 1
+            nextPage: 1,
+            endOfApi : false,
         };
         window.onscroll = this.detectScrollEnd;
     }
@@ -30,14 +31,23 @@ class Characters extends Component {
             const response = await fetch(`https://rickandmortyapi.com/api/character?page=${this.state.nextPage}`);
             const data = await response.json();
 
-            this.setState(() => ({
-                loading: false,
-                data: {
-                    info: data.info,
-                    results: [].concat(this.state.data.results, data.results)
-                },
-                nextPage: this.state.nextPage + 1
-            }));
+            if (response.status !== 404){
+                this.setState(() => ({
+                    loading: false,
+                    data: {
+                        info: data.info,
+                        results: [].concat(this.state.data.results, data.results)
+                    },
+                    nextPage: this.state.nextPage + 1
+                }));
+            } else {
+                this.setState(()=>({
+                    loading: false,
+                    endOfApi : true
+                }))
+            }
+
+
         } catch (e) {
             this.setState(() => ({
                 loading: false,
@@ -77,6 +87,12 @@ class Characters extends Component {
                     <div className="loader">
                         <Loader/>
                     </div>}
+                    {this.state.endOfApi &&
+                        <div className="text-center">
+                            <h1 className="text-white">NO HAY MÁS PERSONAJES :(</h1>
+                            {window.onscroll = ()=>{}}
+                        </div>
+                    }
                 </div>
             </div>
         );
